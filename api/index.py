@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import statistics
@@ -9,7 +9,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -63,7 +63,12 @@ def read_root():
     return {"message": "Analytics API - Use POST /analytics"}
 
 @app.post("/analytics")
-def analyze_telemetry(request: AnalyticsRequest):
+def analyze_telemetry(request: AnalyticsRequest, response: Response):
+    # Explicitly set CORS headers
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    
     result = {}
     
     for region in request.regions:
@@ -91,3 +96,11 @@ def analyze_telemetry(request: AnalyticsRequest):
         }
     
     return result
+
+@app.options("/analytics")
+def options_analytics(response: Response):
+    # Handle preflight requests
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return {}
