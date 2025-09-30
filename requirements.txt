@@ -1,5 +1,4 @@
 fastapi
 uvicorn
+pandas 
 numpy
-pandas
-fastapi.middleware.cors
