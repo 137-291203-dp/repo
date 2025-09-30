@@ -24,12 +24,12 @@ jobs:
         id: cache-uv # Give the step an id to check its output
         with:
           path: ~/.cache/uv
-          key: cache-7845754
+          key: cache-7884451
 
       - name: Install dependencies
         run: uv pip install -r requirements.txt
 
-      - name: prime-cache-7845754
+      - name: prime-cache-7884451
         run: |
           if [[ "${{ steps.cache-uv.outputs.cache-hit }}" == "true" ]]; then
             echo "Cache hit! Dependencies were restored."
